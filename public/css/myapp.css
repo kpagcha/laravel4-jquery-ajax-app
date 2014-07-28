@@ -1,0 +1,16 @@
+body {
+	font-family: 'Ubuntu', sans-serif;
+}
+
+.hide {
+	display: none;
+}
+
+.custom-divider {
+	border-color: #aaa;
+}
+
+#directions-info p strong {
+	width: 15%;
+	display: inline-block;
+}
