@@ -41,3 +41,5 @@ Route::post('/country/store', ['as' => 'country.store', 'uses' => 'CountryContro
 Route::post('/country/clear', ['as' => 'country.clear', 'uses' => 'CountryController@clear']);
 Route::get('/country/all', ['as' => 'country.all', 'uses' => 'CountryController@all']);
 Route::delete('/country/{country}', ['as' => 'country.destroy', 'uses' => 'CountryController@destroy']);
+Route::get('/country/{country}/edit', ['as' => 'country.edit', 'uses' => 'CountryController@edit']);
+Route::put('/country/{country}', ['as' => 'country.update', 'uses' => 'CountryController@update']);

@@ -28,7 +28,13 @@
 		if (url === undefined) url = '/country/all';
 		$.get(url, function(data) {
 				$('#countries-table').empty();
-				$('#countries-table').append(data['html']);
+				if (data['empty'] == false) {
+					$('#countries-table').append(data['html']);
+					$('#clear-countries-form').show();
+				} else {
+					$('#countries-table').append('<div class="alert alert-info">No hay países en la base de datos</div>');
+					$('#clear-countries-form').hide();
+				}
 			});
 	}
 
@@ -204,6 +210,43 @@
 						executed = true;
 					}
 				});
+		});
+	});
+
+	// Editar país
+	$(document).on('click', '.glyphicon-pencil', function(event) {
+		var row = $(this).closest('tr');
+		var id = row.find("input[name='edit-id']").val();
+		$.get('/country/' + id + '/edit', function(data) {
+			row.html(data['html']).find('div.row').hide().slideDown('400');
+		});
+	});
+
+	// Guardar edición
+	$(document).on('click', '.glyphicon-floppy-disk', function(event) {
+		var id = $(this).closest('tr').find("input[name='update-id']").val();
+		$.ajax({
+			url: '/country/' + id,
+			type: 'put',
+			data: $('#edit-country-form').serialize(),
+			context: this
+		})
+		.done(function(data) {
+			if (data['status']) {
+				$(this).closest('tr').find('div').slideUp('400').delay('400', function() {
+					renderCountries();
+				});
+			} else {
+				$('#edit-errors').find('ul').html(data['errors']);
+				$('#edit-errors').modal();
+			}
+		});
+	});
+
+	// Cancelar edición
+	$(document).on('click', '.glyphicon-ban-circle', function(event) {
+		$(this).closest('tr').find('div').slideUp('400').delay('400', function() {
+			renderCountries();
 		});
 	});
 

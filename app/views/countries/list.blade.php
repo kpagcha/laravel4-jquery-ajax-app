@@ -9,6 +9,7 @@
 				<th>Habitantes</th>
 				<th>Moneda</th>
 				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -20,6 +21,12 @@
 					<td>{{ $country->language }}</td>
 					<td>{{ number_format($country->population, 0, "", "&#8239;") }}</td>
 					<td>{{ $country->currency }}</td>
+					<td>
+						{{ Form::open(['class' => 'pull-right']) }}
+							<span class="glyphicon glyphicon-pencil btn btn-xs btn-success"></span>
+							{{ Form::hidden('edit-id', $country->id) }}
+						{{ Form::close() }}
+					</td>
 					<td>
 						{{ Form::open(['class' => 'pull-right']) }}
 							<span class="glyphicon glyphicon-remove btn btn-xs btn-danger"></span>

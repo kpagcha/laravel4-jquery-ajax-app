@@ -7,8 +7,9 @@ class CountryController extends BaseController {
 		$countries = Country::paginate($pages);
 
 		$html = View::make('countries.list', compact('countries'))->render();
+		$empty = (count($countries) == 0) ? true : false;
 		//return [ 'html' => $html ];
-		return Response::json(['html' => $html]);
+		return Response::json(['html' => $html, 'empty' => $empty]);
 	}
 
 	public function index()
@@ -52,40 +53,51 @@ class CountryController extends BaseController {
 		return Response::json($data);
 	}
 
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function show($id)
-	{
-		//
-	}
-
-
-	/**
-	 * Show the form for editing the specified resource.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function edit($id)
 	{
-		//
+		$country = Country::find($id);
+		$html = View::make('countries.edit', compact('country'))->render();
+		
+		return Response::json(['html' => $html]);
 	}
 
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
 	public function update($id)
 	{
-		//
+		$country = Country::find($id);
+
+		$input = Input::except('_token');
+
+		$validator = Validator::make($input,
+			array(
+				'id' => 'unique',
+				'name' => 'required',
+				'population' => 'numeric'
+			)
+		);
+
+		$data = [ 'status' => null, 'errors' => null ];
+
+		if ($validator->passes()) {
+			//$country->update($input);
+			$country->name = $input['name'];
+			$country->continent = $input['continent'];
+			$country->capital = $input['capital'];
+			$country->language = $input['language'];
+			$country->population = $input['population'];
+			$country->currency = $input['currency'];
+
+			if (count($country->getDirty()) > 0) {
+				$country->save();
+			}
+
+			$data['status'] = true;
+		} else {
+			$errors = $validator->messages();
+			$data['errors'] = implode('', $errors->all('<li class="text-warning">:message</li>'));
+			$data['status'] = false;
+		}
+
+		return Response::json($data);
 	}
 
 	public function destroy($id)
