@@ -5,6 +5,7 @@
 	<title>My App</title>
 	{{ HTML::style('css/bootstrap.css') }}
 	{{ HTML::style('css/myapp.css') }}
+	{{ HTML::style('css/jquery-ui.css') }}
 	{{ HTML::script('js/jquery.js') }}
 	<link href='http://fonts.googleapis.com/css?family=Ubuntu' rel='stylesheet' type='text/css'>
 </head>
@@ -26,6 +27,8 @@
 						<li class="{{ Request::path() == '/' ? 'active' : '' }}"><a href="{{ URL::to('/') }}">Página de inicio</a></li>
 						<li class="{{ Request::path() == 'directions' ? 'active' : '' }}"><a href="{{ URL::to('/directions') }}">Direcciones</a></li>
 						<li class="{{ Request::path() == 'country' ? 'active' : '' }}">{{ link_to_route('country.index', 'CRUD países') }}</li>
+						<li class="{{ Request::path() == 'city' ? 'active' : '' }}">{{ link_to_route('city.index', 'CRUD ciudades') }}</li>
+						<li class="{{ Request::path() == 'color' ? 'active' : '' }}">{{ link_to_route('color', 'Color') }}</li>
 					</ul>
 				</div>
 			</div>

@@ -1,29 +1,30 @@
-// Carga los países en la tabla; paginación soportada
-function renderCountries(url) {
-	if (url === undefined || url === null) url = '/country/all';
+// Carga las ciudades en la tabla; paginación soportada
+function renderCities(url) {
+	if (url === undefined || url === null) url = '/city/all';
 	$.get(url, function(data) {
-			$('#countries-table').empty();
+			$('#cities-table').empty();
 			if (data['empty'] == false) {
-				$('#countries-table').append(data['html']);
-				$('#clear-countries-form').show();
+				$('#cities-table').append(data['html']);
+				$('#clear-cities-form').show();
 			} else {
-				$('#countries-table').append('<div class="alert alert-info">No hay países en la base de datos</div>');
-				$('#clear-countries-form').hide();
+				$('#cities-table').append('<div class="alert alert-info">No hay ciudades en la base de datos</div>');
+				$('#clear-cities-form').hide();
+			}
+			if (data['countries']) {
+				$('#input-country').removeAttr('disabled');
+			} else {
+				$('#input-country').attr('disabled', 'disabled');
 			}
 		});
 }
 
 // Limpia los valores del formulario
 function clearFormInput(form) {
-	$(':input', form)
-	  .not(':button, :submit, :reset, :hidden')
-	  .val('')
-	  .removeAttr('checked')
-	  .removeAttr('selected');
+	$(':text').val('');
 }
 
-// Llamada inicial al acceder a countries.index para cargar los países en la tabla
-renderCountries();
+// Llamada inicial al acceder a cities.index para cargar las ciudades en la tabla
+renderCities();
 
 // Paginación async
 var curPage = null;
@@ -32,33 +33,17 @@ $(document).on('click', '.pagination a', function (event) {
     if ( $(this).attr('href') != '#' ) {
         $("html, body").animate({ scrollTop: 0 }, "fast");
         curPage = $(this).attr('href');
-        renderCountries(curPage);
+        renderCities(curPage);
     }
 });
 
-// Crear país async
-$('#create-country-form').submit(function(event) {
-	$.post('/country/store', $('#create-country-form').serialize(), function(data) {
+// Crear ciudad async
+$('#create-city-form').submit(function(event) {
+	$.post('/city/store', $('#create-city-form').serialize(), function(data) {
 
-		// if ($('.table > tbody > tr').length == 5) {
-		// 	if (curPage) {
-		// 		nextPage = nextPageURL(curPage, 'page');
-		// 		renderCountries(nextPage);
-		// 		curPage = nextPage;
-		// 	} else {
-		// 		renderCountries('http://localhost:8000/country/all?page=2')
-		// 	}
-		// } else {
-		// 	if (curPage) {
-		// 		renderCountries(curPage);
-		// 	} else {
-		// 		renderCountries();
-		// 	}
-		// }
+		renderCities(curPage);
 
-		renderCountries(curPage);
-
-		clearFormInput('#create-country-form');
+		clearFormInput('#create-city-form');
 
 		if (data['status']) {
 
@@ -77,11 +62,11 @@ $('#create-country-form').submit(function(event) {
 	event.preventDefault();
 });
 
-// Vaciar la tabla countries async
-$('#clear-countries-form').submit(function(event) {
+// Vaciar la tabla cities async
+$('#clear-cities-form').submit(function(event) {
 	if (confirm('¿Limpiar datos de la tabla?')) {
-		$.post('/country/clear', function(data) {
-			renderCountries();
+		$.post('/city/clear', function(data) {
+			renderCities();
 			$('#info-errors').addClass('hidden');
 			$('#info-success').removeClass('hidden');
 			$('#info-success').html(data['message']);
@@ -141,13 +126,13 @@ function nextPageURL(url, parameter) {
 	return next_page_url;
 }
 
-// Eliminar un país
+// Eliminar una ciudad
 $(document).on('click', '.glyphicon-remove', function(event) {
 	var thiz = $(this);
 	var id = thiz.next('input:hidden').val();
 
 	$.ajax({
-		url: '/country/' + id,
+		url: '/city/' + id,
 		type: 'DELETE'
 	})
 	.done(function(data) {
@@ -163,15 +148,15 @@ $(document).on('click', '.glyphicon-remove', function(event) {
 				if (!executed) {
 					thiz.closest('td').remove();
 					if ($('.table > tbody > tr').length > 1) {
-						renderCountries(curPage);
+						renderCities(curPage);
 					} else {
 						var page = getURLParameter(curPage, 'page');
 						if (page !== '1') {
 							prevPage = previousPageURL(curPage, 'page');
-							renderCountries(prevPage);
+							renderCities(prevPage);
 							curPage = prevPage;
 						} else {
-							renderCountries();
+							renderCities();
 						}
 					}
 					executed = true;
@@ -180,12 +165,18 @@ $(document).on('click', '.glyphicon-remove', function(event) {
 	});
 });
 
-// Editar país
+// Editar ciudad
 $(document).on('click', '.glyphicon-pencil', function(event) {
 	var row = $(this).closest('tr');
 	var id = row.find("input[name='edit-id']").val();
-	$.get('/country/' + id + '/edit', function(data) {
-		row.html(data['html']).find('div#edit-form-container').hide().slideDown('400');
+	$.get('/city/' + id + '/edit', function(data) {
+		var edit = row.html(data['html']).find('div#edit-form-container');
+		edit.hide().slideDown('400');
+		if (data['countries']) {
+			edit.find('select').removeAttr('disabled');
+		} else {
+			edit.find('select').attr('disabled', 'disabled');
+		}
 	});
 });
 
@@ -193,15 +184,15 @@ $(document).on('click', '.glyphicon-pencil', function(event) {
 $(document).on('click', '.glyphicon-floppy-disk', function(event) {
 	var id = $(this).closest('tr').find("input[name='update-id']").val();
 	$.ajax({
-		url: '/country/' + id,
+		url: '/city/' + id,
 		type: 'put',
-		data: $('#edit-country-form').serialize(),
+		data: $('#edit-city-form').serialize(),
 		context: this
 	})
 	.done(function(data) {
 		if (data['status']) {
 			$(this).closest('tr').find('div').slideUp('400').delay('400', function() {
-				renderCountries(curPage);
+				renderCities(curPage);
 			});
 		} else {
 			$('#edit-errors').find('ul').html(data['errors']);
@@ -213,6 +204,6 @@ $(document).on('click', '.glyphicon-floppy-disk', function(event) {
 // Cancelar edición
 $(document).on('click', '.glyphicon-ban-circle', function(event) {
 	$(this).closest('tr').find('div#edit-form-container').slideUp('400').delay('400', function() {
-		renderCountries(curPage);
+		renderCities(curPage);
 	});
 });

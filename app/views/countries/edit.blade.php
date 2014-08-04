@@ -12,7 +12,7 @@
 	</div>
 </div>
 <td colspan="0">
-	<div class="row">
+	<div class="col-md-12" id="edit-form-container">
 		{{ Form::open(['id' => 'edit-country-form']) }}
 		<div class="form-group col-md-12">
 			<div class="col-md-3">

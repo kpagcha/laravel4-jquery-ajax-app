@@ -5,12 +5,30 @@ body {
 .hide {
 	display: none;
 }
-
 .custom-divider {
 	border-color: #aaa;
 }
-
 #directions-info p strong {
 	width: 15%;
 	display: inline-block;
 }
+#red, #green, #blue {
+	float: left;
+	clear: left;
+	width: 300px;
+	margin: 15px;
+}
+#swatch {
+	width: 320px;
+	height: 100px;
+	margin-top: 10px;
+	margin-left: 350px;
+	background-image: none;
+	border-radius: 6px;
+}
+#red .ui-slider-range { background: #ef2929; }
+#red .ui-slider-handle { border-color: #ef2929; }
+#green .ui-slider-range { background: #8ae234; }
+#green .ui-slider-handle { border-color: #8ae234; }
+#blue .ui-slider-range { background: #729fcf; }
+#blue .ui-slider-handle { border-color: #729fcf; }

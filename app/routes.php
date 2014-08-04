@@ -43,3 +43,15 @@ Route::get('/country/all', ['as' => 'country.all', 'uses' => 'CountryController@
 Route::delete('/country/{country}', ['as' => 'country.destroy', 'uses' => 'CountryController@destroy']);
 Route::get('/country/{country}/edit', ['as' => 'country.edit', 'uses' => 'CountryController@edit']);
 Route::put('/country/{country}', ['as' => 'country.update', 'uses' => 'CountryController@update']);
+
+Route::get('/color', ['as' => 'color', function() {
+	return View::make('color');
+}]);
+
+Route::get('/city', ['as' => 'city.index', 'uses' => 'CityController@index']);
+Route::post('/city/store', ['as' => 'city.store', 'uses' => 'CityController@store']);
+Route::post('/city/clear', ['as' => 'city.clear', 'uses' => 'CityController@clear']);
+Route::get('/city/all', ['as' => 'city.all', 'uses' => 'CityController@all']);
+Route::delete('/city/{city}', ['as' => 'city.destroy', 'uses' => 'CityController@destroy']);
+Route::get('/city/{city}/edit', ['as' => 'city.edit', 'uses' => 'CityController@edit']);
+Route::put('/city/{city}', ['as' => 'city.update', 'uses' => 'CityController@update']);

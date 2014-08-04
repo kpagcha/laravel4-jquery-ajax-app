@@ -19,7 +19,10 @@ class CountryController extends BaseController {
 
 	public function clear()
 	{
+		DB::statement("SET foreign_key_checks=0");
 		Country::truncate();
+		DB::statement("SET foreign_key_checks=1");
+
 		$data = [ 'message' => 'Se ha vaciado la tabla' ];
 
 		return Response::json($data);

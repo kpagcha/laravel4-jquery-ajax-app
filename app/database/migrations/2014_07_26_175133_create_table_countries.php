@@ -16,11 +16,11 @@ class CreateTableCountries extends Migration {
 		{
 			$table->increments('id');
 			$table->string('name');
-			$table->string('continent');
-			$table->string('capital');
-			$table->string('language');
-			$table->integer('population');
-			$table->string('currency');
+			$table->string('continent')->nullable();
+			$table->string('capital')->nullable();
+			$table->string('language')->nullable();
+			$table->integer('population')->nullable();
+			$table->string('currency')->nullable();
 			$table->timestamps();
 		});
 	}
