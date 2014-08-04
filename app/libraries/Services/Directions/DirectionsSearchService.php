@@ -1,14 +1,8 @@
 <?php
 
-use Illuminate\Support\ServiceProvider;
+namespace Services\Directions;
 
-class DirectionsSearchService extends ServiceProvider {
-
-	public function register() {
-		$this->app->bind('DirectionsSearchService', function() {
-			return new DirectionsSearchService;
-		});
-	}
+class DirectionsSearchService {
 
 	public function search($input = array()) {
 		$origin = $input['origin'];

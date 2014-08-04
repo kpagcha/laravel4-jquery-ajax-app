@@ -1,56 +1,15 @@
 <?php
 
 class DirectionsAPIController extends BaseController {
-	// public function search() {
-	// 	App::register('my-app-laravel\app\libraries\Services\Directions\DirectionsSearchService');
-	// 	$directionsSearchService = new DirectionsSearchService();
-	// 	return $directionsSearchService->search(Input::all());
-	// }
-	public function search() {
-		$input = Input::all();
-		
-		$origin = $input['origin'];
-		$destination = $input['destination'];
-		$mode = $input['mode'];
 
-		$url = "http://maps.googleapis.com/maps/api/directions/json?origin=" . $origin . "&destination=" . $destination . "&mode=" . $mode . "&sensor=false&language=es";
+	protected $directionsSearchService;
 
-		$json = json_decode(file_get_contents(str_replace(" ", "%20", $url)), true);
+    public function __construct(Services\Directions\DirectionsSearchService $directionsSearchService) {
+        $this->directionsSearchService = $directionsSearchService;
+    }
 
-		$result = var_export($json, true);
-
-		$data = [
-			'url' => $url,
-			'status' => $json['status'],
-			'origin' => '',
-			'destination' => '',
-			'distance' => '',
-			'duration' => '',
-			'route' => [
-				'step' => [],
-				'distance' => [],
-				'duration' => [],
-				'mode' => [],
-				'distance_value' => []
-			],
-			'distance_value' => ''
-		];
-
-		if ($data['status'] == 'OK') {
-			$data['origin'] = $json['routes'][0]['legs'][0]['start_address'];
-			$data['destination'] = $json['routes'][0]['legs'][0]['end_address'];
-			$data['distance'] = $json['routes'][0]['legs'][0]['distance']['text'];
-			$data['duration'] = $json['routes'][0]['legs'][0]['duration']['text'];
-			foreach ($json['routes'][0]['legs'][0]['steps'] as $key => $value) {
-			 	array_push($data['route']['step'], $value['html_instructions']);
-			 	array_push($data['route']['distance'], $value['distance']['text']);
-			 	array_push($data['route']['duration'], $value['duration']['text']);
-			 	array_push($data['route']['mode'], $value['travel_mode']);
-			 	array_push($data['route']['distance_value'], $value['distance']['value']);
-			}
-			$data['distance_value'] = $json['routes'][0]['legs'][0]['distance']['value'];
-		}
-
-		return $data;
-	}
+    public function search() {
+        return $this->directionsSearchService->search(Input::all());
+    }
+    
 }
