@@ -7,9 +7,8 @@ class CountryController extends BaseController {
 		$countries = Country::paginate($pages);
 
 		$html = View::make('countries.list', compact('countries'))->render();
-		$empty = (count($countries) == 0) ? true : false;
 		//return [ 'html' => $html ];
-		return Response::json(['html' => $html, 'empty' => $empty]);
+		return Response::json(['html' => $html, 'empty' => count($countries)]);
 	}
 
 	public function index()

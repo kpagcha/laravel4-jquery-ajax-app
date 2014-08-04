@@ -7,9 +7,8 @@ class CityController extends BaseController {
 		$cities = City::paginate($pages);
 
 		$html = View::make('cities.list', compact('cities'))->render();
-		$empty = (count($cities) == 0) ? true : false;
 		
-		return Response::json(['html' => $html, 'empty' => $empty, 'countries' => count(Country::all()) > 0]);
+		return Response::json(['html' => $html, 'empty' => count($cities) == 0, 'countries' => count(Country::all()) > 0]);
 	}
 
 	public function index()
